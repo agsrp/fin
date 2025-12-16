@@ -243,7 +243,8 @@
         /* --- TIPOGRAFÍA Y ELEMENTOS --- */
         h1 {
             font-family: var(--font-code);
-            font-size: 2rem;
+            font-size: clamp(1.3rem, 5vw, 2.5rem);
+            /* Escalado fluido: mín 1.3rem, ideal 5vw, máx 2.5rem */
             margin-bottom: 10px;
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
             background-clip: text;
@@ -403,10 +404,9 @@
 
         /* --- MEDIA QUERIES (Ajustes escritorio) --- */
         @media (min-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
 
+            /* h1 ya usa clamp, no hace falta override drástico, 
+               pero aseguramos contenedor ancho */
             .container {
                 max-width: 700px;
             }
