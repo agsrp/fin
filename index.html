@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despedida Curso Programación</title>
+    <style>
+        /* --- CONFIGURACIÓN GENERAL --- */
+        :root {
+            --bg-color: #050608;
+            /* Fondo aún más oscuro para contraste */
+            --text-color: #f0f6fc;
+            --accent-cyan: #38bdf8;
+            /* Cyan más vibrante */
+            --accent-purple: #c084fc;
+            /* Violeta más vibrante */
+            --accent-green: #4ade80;
+            /* Verde neón */
+            --glass-bg: rgba(22, 27, 34, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            /* Borde más sutil */
+            --font-code: 'Inter', sans-serif;
+            /* Se eliminó monospace por pedido del usuario */
+            --font-body: 'Inter', sans-serif;
+            /* Fuente principal nueva */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- FONDO ANIMADO (Para resaltar el Glassmorphism) --- */
+        .background-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-purple);
+            top: -50px;
+            left: -50px;
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: var(--accent-cyan);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 2s;
+        }
+
+        .blob-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--accent-green);
+            top: 30%;
+            left: 70%;
+            animation-delay: 4s;
+            opacity: 0.5;
+        }
+
+        .blob-4 {
+            width: 180px;
+            height: 180px;
+            background: #f472b6;
+            /* Un rosa extra para variedad */
+            top: 60%;
+            left: 20%;
+            animation-delay: 6s;
+            opacity: 0.4;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(20px, -20px);
+            }
+        }
+
+        /* --- INTRO SCREEN --- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+            /* Permite ver los blobs de fondo si se desea, o usar un fondo sólido */
+        }
+
+        #intro-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- FULLSCREEN MEMORY OVERLAY --- */
+        #fullscreen-memory {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('sorpresa.jpg');
+            background-color: #000;
+            /* Fallback si la imagen falla */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 99999;
+            /* Encima de todo */
+            display: none;
+            /* Oculto por defecto */
+        }
+
+        #fullscreen-memory.active {
+            display: block;
+        }
+
+        .start-btn {
+            padding: 16px 48px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-weight: 800;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.1);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .start-btn:hover {
+            background: rgba(56, 189, 248, 0.8);
+            border-color: transparent;
+            color: #000;
+            box-shadow: 0 0 60px rgba(56, 189, 248, 0.5);
+            transform: scale(1.05);
+            animation: none;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(56, 189, 248, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(56, 189, 248, 0);
+            }
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (Inicialmente oculto) --- */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px 0;
+            z-index: 1;
+            opacity: 0;
+            /* Oculto inicialmente */
+            transition: opacity 1s ease-in;
+            pointer-events: none;
+            /* Para que no interfiera mientras está oculto */
+        }
+
+        .container.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* --- TARJETAS GLASSMORPHISM MEJORADO --- */
+        .glass-card {
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* --- TIPOGRAFÍA Y ELEMENTOS --- */
+        h1 {
+            font-family: var(--font-code);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(88, 166, 255, 0.3);
+        }
+
+        .code-tag {
+            color: var(--accent-purple);
+            font-family: var(--font-code);
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 1.15rem;
+            color: #c9d1d9;
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(63, 185, 80, 0.3);
+        }
+
+        .quote-box {
+            border-left: 4px solid var(--accent-purple);
+            padding-left: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #d1d5db;
+            background: rgba(188, 140, 255, 0.05);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* --- BOTÓN INTERACTIVO --- */
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent-cyan);
+            text-decoration: none;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+            font-family: var(--font-code);
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--accent-cyan);
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #8b949e;
+            font-family: var(--font-code);
+        }
+
+        /* --- ANIMACIÓN DE ESCRITURA (TYPEWRITER) --- */
+        .typewriter {
+            display: inline-block;
+            overflow: hidden;
+            border-right: .15em solid var(--accent-cyan);
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .05em;
+            animation: blink-caret .75s step-end infinite;
+            max-width: 100%;
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: var(--accent-cyan);
+            }
+        }
+
+
+        /* --- START OF CUSTOM ALERT STYLES --- */
+        #custom-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #custom-alert-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .custom-alert-box {
+            background: rgba(22, 27, 34, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #custom-alert-overlay.active .custom-alert-box {
+            transform: scale(1);
+        }
+
+        .alert-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--accent-cyan);
+            color: #0d1117;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-code);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .alert-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+
+        /* --- MEDIA QUERIES (Ajustes escritorio) --- */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                max-width: 700px;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+
+    <!-- PANTALLA DE INTRODUCCIÓN -->
+    <div id="intro-screen">
+        <button class="start-btn" onclick="startExperience()">Descubrir</button>
+    </div>
+
+    <div class="container" id="main-content">
+
+        <div class="glass-card" style="text-align: center;">
+            <h1><span class="typewriter" id="typing-text"></span></h1>
+        </div>
+
+        <div class="glass-card">
+            <p class="code-tag">// Mensaje para el equipo</p>
+            <br>
+            <div class="quote-box">
+                "El futuro pertenece a quienes creen en la belleza de sus sueños. Que este cierre sea solo el impulso
+                para todo lo que son capaces de lograr."
+            </div>
+
+            <p>
+                Este presente lo hice con mis propias manos, pero lleva guardado el <span class="highlight">cariño
+                    inmenso</span> que les tengo.
+            </p>
+            <p>
+                Me gustaría que lo conserven como un recordatorio de que tienen un valor enorme y de que siempre voy a
+                confiar en su talento.
+            </p>
+            <p>
+                Gracias, <span class="highlight">de todo corazón</span>, por haberme permitido ser parte de su camino.
+            </p>
+
+            <button class="btn" onclick="celebrate()">System.exit(0);</button>
+            <button class="btn" onclick="showMemory()"
+                style="margin-top: 15px; border-color: var(--accent-purple); color: var(--accent-purple);">Ver
+                Recuerdo</button>
+        </div>
+
+        <div class="footer glass-card" style="padding: 15px;">
+            <p>Profe Agustín</p>
+        </div>
+
+    </div>
+
+    <!-- CUSTOM ALERT MODAL -->
+    <div id="fullscreen-memory"></div>
+    <div id="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <h2 style="color: var(--accent-green); margin-bottom: 10px; font-family: var(--font-code);">¡Mensaje!</h2>
+            <p id="alert-message" style="color: var(--text-color); margin-bottom: 20px;">Texto de alerta</p>
+            <button class="alert-btn" onclick="closeAlert()">Aceptar</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para iniciar la experiencia
+        function startExperience() {
+            const intro = document.getElementById('intro-screen');
+            const mainContent = document.getElementById('main-content');
+
+            // Fade out intro
+            intro.classList.add('fade-out');
+
+            // Después de la transición, ocultarlo y mostrar contenido
+            setTimeout(() => {
+                intro.style.display = 'none';
+                mainContent.classList.add('active');
+
+                // Iniciar observador y typewriter DESPUÉS de mostrar el contenido
+                initAnimations();
+            }, 800);
+        }
+
+        function initAnimations() {
+            // 1. Animación de "Scroll Reveal"
+            const observerOptions = {
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.glass-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // 2. Animación de Escritura (Typewriter)
+            const text = "¡Curso Completado!";
+            const typingElement = document.getElementById('typing-text');
+            // Resetear texto por si acaso
+            typingElement.innerHTML = "";
+            let index = 0;
+
+            function typeWriter() {
+                if (index < text.length) {
+                    typingElement.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+
+            setTimeout(typeWriter, 500);
+        }
+
+
+        // 3. Interacción del Botón
+        function celebrate() {
+            const btn = document.querySelector('.btn');
+            btn.innerHTML = "¡Éxitos! 🚀";
+            btn.style.background = "var(--accent-green)";
+            btn.style.borderColor = "var(--accent-green)";
+            btn.style.color = "#fff";
+
+            // Usar alerta personalizada en lugar de alert()
+            showAlert("¡Felicitaciones por terminar esta etapa! Lo mejor está por venir.");
+        }
+
+        // 4. Lógica de Alerta Personalizada
+        function showAlert(message) {
+            const overlay = document.getElementById('custom-alert-overlay');
+            const msgElement = document.getElementById('alert-message');
+
+            msgElement.textContent = message;
+            overlay.classList.add('active');
+        }
+
+        function closeAlert() {
+            const overlay = document.getElementById('custom-alert-overlay');
+            overlay.classList.remove('active');
+        }
+
+        // 5. Fullscreen Memory Trap
+        function showMemory() {
+            const memoryOverlay = document.getElementById('fullscreen-memory');
+            memoryOverlay.classList.add('active');
+            // No hay forma de salir programáticamente
+        }
+    </script>
+</body>
+
+</html>
